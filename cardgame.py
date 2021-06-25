@@ -5,7 +5,7 @@ class Card:
       self.val=val
 
     def show(self):
-        print(self.val + " of " + self.suit)
+        print(str(self.val) + " of " + self.suit)
 
 class Deck:
     def __init__(self):
@@ -18,4 +18,15 @@ class Deck:
                 self.cards.append(Card(s,v))
 
     def show(self):
-        print(self.cards)
+        for card in self.cards:
+            card.show()
+
+    def shuffle(self):
+        for i in range(len(self.cards) - 1, 0, -1):
+            r=random.randint(0,i)
+            self.cards[i], self.cards[r]=self.cards[r], self.cards[i]
+
+
+deck=Deck()
+deck.shuffle()
+deck.show()
