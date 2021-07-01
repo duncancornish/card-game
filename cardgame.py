@@ -1,21 +1,22 @@
 import random
 class Card:
-    def __init__(self, suit, val):
-      self.suit=suit
-      self.val=val
+    def __init__(self, val, suit, faceup=True):
+        self.val=val
+        self.suit=suit
+        self.faceup=faceup
 
     def show(self):
-        print(str(self.val) + " of " + self.suit)
+        if self.faceup:
+            print(str(self.val) + " of " + self.suit)
+        else:
+            print("Card is face down")
 
 class Deck:
     def __init__(self):
         self.cards=[]
-        self.build()
-
-    def build(self):
         for s in ["Spades", "Clubs", "Diamonds", "Hearts"]:
             for v in range(1,14):
-                self.cards.append(Card(s,v))
+                self.cards.append(Card(v,s, False))
 
     def show(self):
         for card in self.cards:
@@ -25,8 +26,46 @@ class Deck:
         for i in range(len(self.cards) - 1, 0, -1):
             r=random.randint(0,i)
             self.cards[i], self.cards[r]=self.cards[r], self.cards[i]
-
-
 deck=Deck()
 deck.shuffle()
-deck.show()
+
+class Hand:
+    def __init__(self):
+        self.cards=[]
+
+    def show(self):
+        for card in self.cards:
+            card.show()
+
+    def draw(self, faceup=True, deck=deck):
+        card=deck.cards[0]
+        if not faceup:
+            card.faceup=False
+        else:
+            card.faceup=True
+        self.cards.append(card)
+        deck.cards.remove(card)
+
+class Player:
+    def __init__(self):
+        self.hand=Hand()
+        self.frontdown=Hand()
+        self.frontup=Hand()
+        for i in range(3):
+            self.hand.draw()
+            self.frontup.draw()
+            self.frontdown.draw(faceup=False)
+
+
+    def show(self):
+        print("Hand:")
+        for card in self.hand.cards:
+            card.show()
+        print("In front:")
+        for card in self.frontup.cards:
+            card.show()
+        for card in self.frontdown.cards:
+            card.show()
+
+p1=Player()
+p1.show()
