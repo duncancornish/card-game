@@ -67,5 +67,21 @@ class Player:
         for card in self.frontdown.cards:
             card.show()
 
+playpile=Hand()
+def Play(card):
+    if card.val==9:#Ace is high, so this value equates to 10
+        playpile=Hand()
+    elif card.val==1:#Ace is high, so this value equates to 2
+        playpile.append(card)
+    elif card.val > playpile[-1].val:
+        playpile.append(card)
+
+players={}
+def Create_Player(pnum):
+    pstring=str(pnum)
+
 p1=Player()
 p1.show()
+pcount=input("How many players? ")
+for p in range(pcount):
+    Create_Player(p)
