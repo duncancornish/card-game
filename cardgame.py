@@ -68,11 +68,11 @@ class Player:
 
 playpile=Hand()
 def Play(card):
-    if card.val==10:#This lets 10 be played any time
-        playpile=Hand()#This lets 10 remove all cards in the pile from play
-    elif card.val==1 or card.val==2:#This lets ace and 2 be played any time
+    if card.val==10:#Lets 10 be played any time
+        playpile=Hand()#Lets 10 remove all cards in the pile from play
+    elif card.val==1 or card.val==2:#Lets ace and 2 be played any time
         playpile.append(card)
-    elif card.val > playpile[-1].val:
+    elif card.val > playpile[-1].val:#Checks if the card is greater then the current top of the pile
         playpile.append(card)
 
 players={}
