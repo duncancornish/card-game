@@ -28,7 +28,6 @@ class Deck:
             self.cards[i], self.cards[r]=self.cards[r], self.cards[i]
 deck=Deck()
 deck.shuffle()
-
 class Hand:
     def __init__(self):
         self.cards=[]
@@ -69,19 +68,17 @@ class Player:
 
 playpile=Hand()
 def Play(card):
-    if card.val==9:#Ace is high, so this value equates to 10
-        playpile=Hand()
-    elif card.val==1:#Ace is high, so this value equates to 2
+    if card.val==10:#This lets 10 be played any time
+        playpile=Hand()#This lets 10 remove all cards in the pile from play
+    elif card.val==1 or card.val==2:#This lets ace and 2 be played any time
         playpile.append(card)
     elif card.val > playpile[-1].val:
         playpile.append(card)
 
 players={}
-def Create_Player(pnum):
-    pstring=str(pnum)
-
-p1=Player()
-p1.show()
 pcount=input("How many players? ")
-for p in range(pcount):
-    Create_Player(p)
+if int(pcount)>5:
+    print("Too many players")
+else:
+    for p in range(int(pcount)):
+        players[p]=Player()
