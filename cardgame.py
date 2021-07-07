@@ -44,7 +44,7 @@ class Hand:
             card.faceup=True
         self.cards.append(card)
         deck.cards.remove(card)
-
+playpile=Hand()
 class Player:
     def __init__(self):
         self.hand=Hand()
@@ -66,14 +66,14 @@ class Player:
         for card in self.frontdown.cards:
             card.show()
 
-playpile=Hand()
-def Play(card):
-    if card.val==10:#Lets 10 be played any time
-        playpile=Hand()#Lets 10 remove all cards in the pile from play
-    elif card.val==1 or card.val==2:#Lets ace and 2 be played any time
-        playpile.append(card)
-    elif card.val > playpile[-1].val:#Checks if the card is greater then the current top of the pile
-        playpile.append(card)
+def Play(card, originhand):
+    if playcard.val==10:#Lets 10 remove all cards in the pile from play
+        playpile.cards=[]
+    else:
+        playpile.cards.append(playcard)
+    originhand.cards.remove(card)
+    if deck.cards!=[] and len(originhand.cards)<4:
+        originhand.draw
 
 players={}
 pcount=input("How many players? ")
@@ -82,3 +82,23 @@ if int(pcount)>5:
 else:
     for p in range(int(pcount)):
         players[p]=Player()
+gameover=False
+while gameover==False:
+    for p in players:
+        print("Player "+str(p+1)+"'s turn")
+        players[p].show()
+        if playpile.cards==[]:
+            print("The pile is currently empty")
+        else:
+            print("Current top of the pile: ")
+            playpile.cards[-1].show()
+        cardhasbeenplayed=False
+        while cardhasbeenplayed==False:
+            playcard=input("Which card would you like to play? ")
+            playcard=int(playcard)-1
+            playcard=players[p].hand.cards[playcard]
+            if playcard.val==10 or playpile.cards==[] or playcard.val==1 or playcard.val==2 or playcard.val >= playpile.cards[-1].val:
+                Play(playcard, players[p].hand)
+                cardhasbeenplayed=True
+            else:
+                print("You cannot play that card. Choose another.")
