@@ -73,7 +73,7 @@ def Play(card, originhand):
         playpile.cards.append(playcard)
     originhand.cards.remove(card)
     if deck.cards!=[] and len(originhand.cards)<4:
-        originhand.draw
+        originhand.draw()
 
 players={}
 pcount=input("How many players? ")
@@ -92,13 +92,22 @@ while gameover==False:
         else:
             print("Current top of the pile: ")
             playpile.cards[-1].show()
-        cardhasbeenplayed=False
-        while cardhasbeenplayed==False:
-            playcard=input("Which card would you like to play? ")
-            playcard=int(playcard)-1
-            playcard=players[p].hand.cards[playcard]
-            if playcard.val==10 or playpile.cards==[] or playcard.val==1 or playcard.val==2 or playcard.val >= playpile.cards[-1].val:
-                Play(playcard, players[p].hand)
-                cardhasbeenplayed=True
-            else:
-                print("You cannot play that card. Choose another.")
+        aplayablecard=False#Checks to see if the current player can play any cards
+        for card in players[p].hand.cards:
+            if card.val==10 or playpile.cards==[] or card.val==1 or card.val==2 or card.val >= playpile.cards[-1].val:
+                aplayablecard=True
+        if aplayablecard==False:
+            input("No cards currently playable, drawing a card and skipping the turn...")
+            if deck.cards!=[]:
+                players[p].hand.draw()
+        else:
+            cardhasbeenplayed=False
+            while cardhasbeenplayed==False:
+                playcard=input("Which card would you like to play? ")
+                playcard=int(playcard)-1
+                playcard=players[p].hand.cards[playcard]
+                if playcard.val==10 or playpile.cards==[] or playcard.val==1 or playcard.val==2 or playcard.val >= playpile.cards[-1].val:
+                    Play(playcard, players[p].hand)
+                    cardhasbeenplayed=True
+                else:
+                    print("You cannot play that card. Choose another.")
