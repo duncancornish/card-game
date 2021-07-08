@@ -11,6 +11,12 @@ class Card:
         else:
             print("Card is face down")
 
+    def checkplayable(self):
+        playable=False
+        if self.val==10 or playpile.cards==[] or self.val==1 or self.val==2 or self.val >= playpile.cards[-1].val:
+            playable=True
+        return playable
+
 class Deck:
     def __init__(self):
         self.cards=[]
@@ -28,6 +34,7 @@ class Deck:
             self.cards[i], self.cards[r]=self.cards[r], self.cards[i]
 deck=Deck()
 deck.shuffle()
+
 class Hand:
     def __init__(self):
         self.cards=[]
@@ -44,7 +51,17 @@ class Hand:
             card.faceup=True
         self.cards.append(card)
         deck.cards.remove(card)
+
+    def play(self, card):
+        if card.val==10:#Lets 10 remove all cards in the pile from play
+            playpile.cards=[]
+        else:
+            playpile.cards.append(card)
+        self.cards.remove(card)
+        if deck.cards!=[] and len(self.cards)<4:
+            self.draw()
 playpile=Hand()
+
 class Player:
     def __init__(self):
         self.hand=Hand()
@@ -66,14 +83,28 @@ class Player:
         for card in self.frontdown.cards:
             card.show()
 
-def Play(card, originhand):
-    if playcard.val==10:#Lets 10 remove all cards in the pile from play
-        playpile.cards=[]
-    else:
-        playpile.cards.append(playcard)
-    originhand.cards.remove(card)
-    if deck.cards!=[] and len(originhand.cards)<4:
-        originhand.draw()
+    def checkplayable(self):
+        playable=False
+        if len(self.hand.cards)>0:
+            for card in self.hand.cards:
+                if card.val==10 or playpile.cards==[] or card.val==1 or card.val==2 or card.val >= playpile.cards[-1].val:
+                    playable=True
+        elif len(self.frontup.cards)>0:
+            for card in self.frontup.cards:
+                if card.val==10 or playpile.cards==[] or card.val==1 or card.val==2 or card.val >= playpile.cards[-1].val:
+                    playable=True
+        elif len(self.frontdown.cards)>0:
+            print("Attempting to play a card...")
+            card=self.frontdown.cards[0]
+            card.faceup=True
+            print("Card is "+card.show())
+            if card.val==10 or playpile.cards==[] or card.val==1 or card.val==2 or card.val >= playpile.cards[-1].val:
+                playable=True
+            else:
+                self.hand.cards.append(card)
+                self.frontdown.cards.remove(card)
+                playable=0
+        return playable
 
 players={}
 pcount=input("How many players? ")
@@ -92,11 +123,7 @@ while gameover==False:
         else:
             print("Current top of the pile: ")
             playpile.cards[-1].show()
-        aplayablecard=False#Checks to see if the current player can play any cards
-        for card in players[p].hand.cards:
-            if card.val==10 or playpile.cards==[] or card.val==1 or card.val==2 or card.val >= playpile.cards[-1].val:
-                aplayablecard=True
-        if aplayablecard==False:
+        if players[p].checkplayable()==False:
             input("No cards currently playable, drawing a card and skipping the turn...")
             if deck.cards!=[]:
                 players[p].hand.draw()
@@ -105,9 +132,14 @@ while gameover==False:
             while cardhasbeenplayed==False:
                 playcard=input("Which card would you like to play? ")
                 playcard=int(playcard)-1
-                playcard=players[p].hand.cards[playcard]
-                if playcard.val==10 or playpile.cards==[] or playcard.val==1 or playcard.val==2 or playcard.val >= playpile.cards[-1].val:
-                    Play(playcard, players[p].hand)
+                if len(players[p].hand.cards)>0:
+                    playcard=players[p].hand.cards[playcard]
+                elif len(players[p].frontup.cards)>0:
+                    playcard=players[p].frontup.cards[playcard]
+                else:
+                    playcard=players[p].frontdown.cards[0]
+                if playcard.checkplayable()==True:
+                    players[p].hand.play(playcard)
                     cardhasbeenplayed=True
                 else:
                     print("You cannot play that card. Choose another.")
